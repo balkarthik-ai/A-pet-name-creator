@@ -1,2 +1,5 @@
 # A-pet-name-creator
-An app where i can create a name for my pet no matter if its a girl of boy!!
+A friendly single-page pet store chatbot that helps customers name their pets.
+
+## Launch
+Open `index.html` in your browser to try the pet store chatbot.

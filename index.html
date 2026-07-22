@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pet Name Store Chatbot</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="hero">
+      <div class="hero-text">
+        <h1>Pet Name Store</h1>
+        <p>Your friendly pet store owner is here to help find the perfect name for your new friend.</p>
+      </div>
+      <div class="hero-illustration" aria-hidden="true">
+        <div class="pet-icon dog">🐶</div>
+        <div class="pet-icon cat">🐱</div>
+        <div class="pet-icon bird">🐦</div>
+        <div class="pet-icon fish">🐠</div>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <section class="controls-card">
+        <h2>Tell me about your pet</h2>
+        <form id="pet-form">
+          <label>
+            Pet type
+            <select id="pet-type" required>
+              <option value="dog">Dog</option>
+              <option value="cat">Cat</option>
+              <option value="bird">Bird</option>
+              <option value="fish">Fish</option>
+            </select>
+          </label>
+
+          <label>
+            Gender
+            <select id="pet-gender" required>
+              <option value="boy">Boy</option>
+              <option value="girl">Girl</option>
+            </select>
+          </label>
+
+          <label>
+            Pet personality (optional)
+            <input id="pet-personality" type="text" placeholder="playful, sleepy, brave...">
+          </label>
+
+          <button type="submit" id="create-names">Get Name Ideas</button>
+        </form>
+      </section>
+
+      <section class="chat-card">
+        <div class="chat-header">
+          <div class="chat-avatar">🛍️</div>
+          <div>
+            <h2>Pet Store Assistant</h2>
+            <p>Friendly, playful, and ready to help.</p>
+          </div>
+        </div>
+
+        <div id="chat-window" class="chat-window" aria-live="polite">
+          <div class="chat-message bot">
+            <span class="message-label">Shopkeeper:</span>
+            <p>Hi there! I can help you choose a fun and fitting name for your pet. Pick a type and gender, then let me do the rest!</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

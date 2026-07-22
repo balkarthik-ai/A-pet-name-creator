@@ -1,8 +1,17 @@
 const form = document.getElementById('pet-form');
+const chatForm = document.getElementById('chat-form');
 const chatWindow = document.getElementById('chat-window');
+const chatMessageInput = document.getElementById('chat-message');
 const typeInput = document.getElementById('pet-type');
 const genderInput = document.getElementById('pet-gender');
 const personalityInput = document.getElementById('pet-personality');
+
+let currentSession = {
+  active: false,
+  type: null,
+  gender: null,
+  personality: null
+};
 
 const names = {
   dog: {
@@ -57,6 +66,22 @@ function appendMessage(text, sender = 'bot') {
   chatWindow.scrollTop = chatWindow.scrollHeight;
 }
 
+function startSession(type, gender, personality) {
+  currentSession = {
+    active: true,
+    type,
+    gender,
+    personality
+  };
+}
+
+function getSuggestionPrompt(type, gender, personality) {
+  const friendlyType = type === 'dog' ? 'dog' : type === 'cat' ? 'cat' : type === 'bird' ? 'bird' : 'fish';
+  const genderText = gender === 'boy' ? 'boy' : 'girl';
+  const personalityText = personality ? ` with a ${personality} personality` : '';
+  return `Here are some fun name ideas for your ${genderText} ${friendlyType}${personalityText}:`;
+}
+
 function makeNameSuggestions(type, gender, personality) {
   const base = names[type]?.[gender] ?? [];
   const extras = personality ? personality.toLowerCase().split(/\W+/) : [];
@@ -73,14 +98,46 @@ form.addEventListener('submit', event => {
   const petGender = genderInput.value;
   const personality = personalityInput.value.trim();
 
-  const friendlyType = petType === 'dog' ? 'dog' : petType === 'cat' ? 'cat' : petType === 'bird' ? 'bird' : 'fish';
-  const genderText = petGender === 'boy' ? 'boy' : 'girl';
-
-  appendMessage(`I have a ${genderText} ${friendlyType} who is ${personality || 'a wonderful companion'}!`, 'user');
+  startSession(petType, petGender, personality);
+  appendMessage(`I have a ${petGender} ${petType} who is ${personality || 'a wonderful companion'}!`, 'user');
   appendMessage('Give me one moment while I fetch the best name ideas from the pet store shelf...');
 
   setTimeout(() => {
     const suggestions = makeNameSuggestions(petType, petGender, personality);
-    appendMessage(`Here are some fun name ideas for your ${genderText} ${friendlyType}: \n- ${suggestions.join('\n- ')}\nLet me know if you want more!`);
+    appendMessage(`${getSuggestionPrompt(petType, petGender, personality)}\n- ${suggestions.join('\n- ')}\nIf you want a different set, just say "more names" or "try again".`);
   }, 700);
+});
+
+chatForm.addEventListener('submit', event => {
+  event.preventDefault();
+
+  const message = chatMessageInput.value.trim();
+  if (!message) return;
+
+  appendMessage(message, 'user');
+  chatMessageInput.value = '';
+
+  if (!currentSession.active) {
+    appendMessage('First, tell me about your pet in the form above so I can suggest names that fit.');
+    return;
+  }
+
+  const normalized = message.toLowerCase();
+  const wantsMore = /more|again|different|another|not (those|these|them)|new/i.test(normalized);
+  const askForHelp = /help|sure|name|suggest|idea/i.test(normalized);
+
+  setTimeout(() => {
+    if (wantsMore) {
+      const suggestions = makeNameSuggestions(currentSession.type, currentSession.gender, currentSession.personality);
+      appendMessage(`${getSuggestionPrompt(currentSession.type, currentSession.gender, currentSession.personality)}\n- ${suggestions.join('\n- ')}\nIf you want another set, type "more names" again or tell me what mood you want.`);
+      return;
+    }
+
+    if (askForHelp) {
+      appendMessage('I can suggest names based on what you like! Tell me if you want something cute, brave, silly, or sparkly, or just ask for more names.');
+      return;
+    }
+
+    appendMessage('I love your idea! If the names above are not quite right, just say "more names" or describe the kind of name you want.');
+  }, 500);
 });

@@ -122,6 +122,8 @@ input {
   border: 1px solid rgba(100, 81, 112, 0.18);
   border-radius: 18px;
   font: inherit;
+  color: var(--text);
+  background: #ffffff;
   outline: none;
   transition: border-color 0.2s ease, transform 0.2s ease;
 }
